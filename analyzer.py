@@ -313,7 +313,7 @@ analyzer.json_encoder=NpEncoder
 def index():
     try:
         request_data=request.json
-        analysis_data = runAnalysis(request_data["spot"],request_data["iv"],50,0,1,request_data["legs"])
+        analysis_data = runAnalysis(request_data["spot"],request_data["iv"],request_data["strike_difference"],0,1,request_data["legs"])
         return make_response(jsonify({"status":"success","data":analysis_data}),200)
     except Exception as e:
         exc_type, exc_obj, tb = sys.exc_info()
@@ -326,6 +326,7 @@ def index():
         return make_response(jsonify({"status":"failure","message":"Failed to process"}), 200)
 
 if __name__ == '__main__':
-    analyzer.run(debug=True,host='127.0.0.1', port='6000')
+    # Dev Running at 7000 and prod running at 6000
+    analyzer.run(debug=True,host='127.0.0.1', port='7000')
     # analyzer.run(debug=True)
 
