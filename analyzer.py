@@ -112,7 +112,7 @@ def get_strategy_data(underlying_price,interest_rate,after_n_days,legs):
                 strategy_data["gamma"]+=leg_data["gamma"]*leg["size"]*leg["lot_size"]
                 strategy_data["theta"]-=leg_data["theta"]*leg["size"]*leg["lot_size"]
                 strategy_data["vega"]-=leg_data["vega"]*leg["size"]*leg["lot_size"]
-                leg["delta"]=leg_data["delta"]*leg["size"]*leg["lot_size"]
+                leg["delta"]=-leg_data["delta"]*leg["size"]*leg["lot_size"]
                 leg["gamma"]=leg_data["gamma"]*leg["size"]*leg["lot_size"]
                 leg["vega"]=-leg_data["vega"]*leg["size"]*leg["lot_size"]
                 leg["theta"]=-leg_data["theta"]*leg["size"]*leg["lot_size"]
