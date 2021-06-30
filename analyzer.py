@@ -146,10 +146,8 @@ def get_premium_pnl(underlying_price,minimum_days_to_expiry,interest_rate,after_
         for i,leg in enumerate(legs):
             leg_data_current=get_current_premium(leg["type"],underlying_price,leg["strike"],leg["price"],leg["days_to_expiry"],after_n_days,interest_rate,leg["iv"])
             if leg["days_to_expiry"]-minimum_days_to_expiry==0:
-                print(leg["days_to_expiry"],minimum_days_to_expiry)
                 leg_data_final=get_final_premium(leg["type"],underlying_price,leg["strike"],leg["price"])
             else:
-                print(leg["days_to_expiry"],minimum_days_to_expiry)
                 leg_data_final=get_current_premium(leg["type"],underlying_price,leg["strike"],leg["price"],leg["days_to_expiry"]-minimum_days_to_expiry,after_n_days,interest_rate,leg["iv"])
             if leg["transaction_type"]=="SELL":
                 current_premium_pnl+=(leg["executed_price"]-leg_data_current["price"])*leg["size"]*leg["lot_size"]
