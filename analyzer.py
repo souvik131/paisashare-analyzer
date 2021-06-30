@@ -108,7 +108,7 @@ def get_strategy_data(underlying_price,interest_rate,after_n_days,legs):
             leg_data=get_current_premium(leg["type"],underlying_price,leg["strike"],leg["price"],leg["days_to_expiry"],after_n_days,interest_rate,leg["iv"])
             if leg["transaction_type"]=="SELL":
                 strategy_data["premium_pnl"]+=(leg["executed_price"]-leg_data["price"])*leg["size"]*leg["lot_size"]
-                strategy_data["delta"]+=leg_data["delta"]*leg["size"]*leg["lot_size"]
+                strategy_data["delta"]-=leg_data["delta"]*leg["size"]*leg["lot_size"]
                 strategy_data["gamma"]+=leg_data["gamma"]*leg["size"]*leg["lot_size"]
                 strategy_data["theta"]-=leg_data["theta"]*leg["size"]*leg["lot_size"]
                 strategy_data["vega"]-=leg_data["vega"]*leg["size"]*leg["lot_size"]
