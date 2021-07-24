@@ -323,6 +323,49 @@ def index():
         print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(e,filename, lineno, line.strip(), exc_obj))
         return make_response(jsonify({"status":"failure","message":"Failed to process"}), 200)
 
+@analyzer.route('/ocGreeks',methods=['POST'])
+def ocGreeks():
+    try:
+        request_data=request.json
+
+        for i,strikeData in enumerate(request_data["data"]):
+            if "call" in strikeData:
+                if strikeData["call"]["ltp"]!="-" and strikeData["call"]["iv"]!="-":
+                    greeks=get_current_premium("CALL",request_data["spotPrice"],strikeData["strike"],strikeData["call"]["ltp"],strikeData["call"]["daysToExpiry"],1,0,strikeData["call"]["iv"])
+                    request_data["data"][i]["call"]["delta"]=greeks["delta"]
+                    request_data["data"][i]["call"]["vega"]=greeks["vega"]
+                    request_data["data"][i]["call"]["gamma"]=greeks["gamma"]
+                    request_data["data"][i]["call"]["theta"]=greeks["theta"]
+                else:
+                    request_data["data"][i]["call"]["delta"]="-"
+                    request_data["data"][i]["call"]["vega"]="-"
+                    request_data["data"][i]["call"]["gamma"]="-"
+                    request_data["data"][i]["call"]["theta"]="-"
+
+            if "put" in strikeData:
+                if strikeData["put"]["ltp"]!="-" and strikeData["put"]["iv"]!="-":
+                    greeks=get_current_premium("PUT",request_data["spotPrice"],strikeData["strike"],strikeData["put"]["ltp"],strikeData["put"]["daysToExpiry"],1,0,strikeData["put"]["iv"])
+                    request_data["data"][i]["put"]["delta"]=greeks["delta"]
+                    request_data["data"][i]["put"]["vega"]=greeks["vega"]
+                    request_data["data"][i]["put"]["gamma"]=greeks["gamma"]
+                    request_data["data"][i]["put"]["theta"]=greeks["theta"]
+                else:
+                    request_data["data"][i]["put"]["delta"]="-"
+                    request_data["data"][i]["put"]["vega"]="-"
+                    request_data["data"][i]["put"]["gamma"]="-"
+                    request_data["data"][i]["put"]["theta"]="-"
+        return make_response(jsonify({"status":"success","data":request_data}),200)
+    except Exception as e:
+        exc_type, exc_obj, tb = sys.exc_info()
+        f = tb.tb_frame
+        lineno = tb.tb_lineno
+        filename = f.f_code.co_filename
+        linecache.checkcache(filename)
+        line = linecache.getline(filename, lineno, f.f_globals)
+        print('EXCEPTION IN ({}, LINE {} "{}"): {}'.format(e,filename, lineno, line.strip(), exc_obj))
+        return make_response(jsonify({"status":"failure","message":"Failed to process"}), 200)
+
+
 if __name__ == '__main__':
     # Dev Running at 7000 and prod running at 6000
     analyzer.run(debug=True,host='127.0.0.1', port='7000')
