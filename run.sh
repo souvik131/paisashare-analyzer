@@ -1,1 +1,1 @@
-sudo nohup python3 analyzer.py > dev.log.txt 2>&1 &
+sudo gunicorn analyzer:analyzer -b 127.0.0.1:6000 --workers 4
